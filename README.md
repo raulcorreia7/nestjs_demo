@@ -16,7 +16,7 @@ Your goal is to demonstrate:
 
 ### 1. `GET /photos/:albumId`
 - Fetch photos for a given album from:  
-  `https://jsonplaceholder.typicode.com/albums/:albumId/photos`
+  `https://jsonplaceholder.typicode.com/photos?albumId=x`
 - Cache the result per `albumId` for 10 minutes
 - Save new results to a Postgres DB (de-dupe by `photo.id`)
 - Return data to the client
