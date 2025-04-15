@@ -1,4 +1,4 @@
-import * as R from "remeda";
+import * as Belt from "@mobily/ts-belt";
 import { PaginatedResponseType } from "../types/generic.types";
 
 export function totalPages(items: unknown[], limit: number) {
@@ -13,7 +13,12 @@ export function paginate<T>(
   const tItems = items.length;
   const tPages = totalPages(items, limit);
 
-  const data = R.pipe(items, R.drop((page - 1) * limit), R.take(limit));
+  const data = Belt.pipe(
+    items,
+    Belt.A.drop((page - 1) * limit),
+    Belt.A.take(limit),
+    Belt.F.toMutable
+  );
 
   return {
     data,

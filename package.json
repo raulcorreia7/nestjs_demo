@@ -9,6 +9,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "@mobily/ts-belt": "^3.13.1",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.17",
     "@nestjs/core": "^11.0.17",

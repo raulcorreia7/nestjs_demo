@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import axios from "axios";
-import * as R from "remeda";
+import * as Belt from "@mobily/ts-belt";
 import { Photos } from "../types/photos.types";
 import { config } from "../config/config";
 @Injectable()
@@ -29,10 +29,11 @@ export class PhotosService {
         params: { albumId },
       });
 
-      const data = R.pipe(
+      const data = Belt.pipe(
         call.data,
-        R.uniqueBy((x) => x.id),
-        R.sortBy((x) => x.id)
+        Belt.A.uniqBy((x) => x.id),
+        Belt.A.sortBy((x) => x.id),
+        Belt.F.toMutable
       );
 
       await this.cacheManager.set(cacheKey, data, config.photos.ttl);
