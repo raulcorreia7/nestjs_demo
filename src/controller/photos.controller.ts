@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Query,
   UseInterceptors,
@@ -11,48 +12,32 @@ import { PhotosService } from "../service/photos.service";
 import { Photos, PhotosPaginated } from "../types/photos.types";
 import { PositiveNumber } from "../types/generic.types";
 import { Value } from "@sinclair/typebox/value";
-import { f_paginate, totalPages } from "../utils/paginate";
+import { paginate, totalPages } from "../utils/paginate";
 
 @Controller("/photos")
 @UseInterceptors(CacheInterceptor)
 export class PhotosController {
   constructor(private readonly photoService: PhotosService) {}
 
-  @Get()
+  @Get(":albumId")
   async getPhotos(
-    @Query("albumId", ParseIntPipe) albumId: number
-  ): Promise<Photos[]> {
+    @Param("albumId", ParseIntPipe) albumId: number,
+    @Query("page") page?: number,
+    @Query("limit") limit?: number
+  ): Promise<Photos[] | PhotosPaginated> {
     if (!Value.Check(PositiveNumber, albumId)) {
       throw new BadRequestException(
         "'albumId' needs to be defined or a positive number."
       );
     }
 
-    const photos: Photos[] = await this.photoService.getPhotosByAlbumId(
-      albumId
-    );
-    return photos;
-  }
-
-  @Get("/page")
-  async getPhotosPaginated(
-    @Query("albumId", ParseIntPipe) albumId: number,
-    @Query("page") page: number = 1,
-    @Query("limit") limit: number = 10
-  ): Promise<PhotosPaginated> {
-    if (!Value.Check(PositiveNumber, albumId)) {
-      throw new BadRequestException(
-        "'albumId' needs to be defined or a positive number."
-      );
-    }
-
-    if (page < 0) {
+    if (page != null && page < 0) {
       throw new BadRequestException(
         "'page' needs to be defined or a positive number."
       );
     }
 
-    if (limit < 0) {
+    if (limit != null && limit < 0) {
       throw new BadRequestException(
         "'limit' needs to be defined or a positive number."
       );
@@ -62,12 +47,15 @@ export class PhotosController {
       albumId
     );
 
-    if (page > totalPages(photos, limit)) {
-      throw new BadRequestException(
-        "requested 'page' is more than the 'totalPages'"
-      );
+    if (page && limit) {
+      if (page > totalPages(photos, limit)) {
+        throw new BadRequestException(
+          "requested 'page' is more than the 'totalPages'"
+        );
+      }
+      return paginate(photos, page, limit);
+    } else {
+      return photos;
     }
-
-    return f_paginate(photos, page, limit);
   }
 }
