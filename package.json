@@ -1,6 +1,5 @@
 {
   "devDependencies": {
-    "@types/underscore": "^1.13.0",
     "run-script-webpack-plugin": "^0.2.3",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
@@ -17,8 +16,8 @@
     "@sinclair/typebox": "^0.34.33",
     "axios": "^1.8.4",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2",
-    "underscore": "^1.13.7"
+    "remeda": "^2.21.2",
+    "rxjs": "^7.8.2"
   },
   "scripts": {
     "start": "ts-node src/main.ts",

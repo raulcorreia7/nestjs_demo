@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import axios from "axios";
-import _ from "underscore";
+import * as R from "remeda";
 import { Photos } from "../types/photos.types";
 
 @Injectable()
@@ -31,7 +31,12 @@ export class PhotosService {
         params: { albumId },
       });
 
-      const data = _.sortBy(call.data, "id");
+      const data = R.pipe(
+        call.data,
+        R.uniqueBy((x) => x.id),
+        R.sortBy((x) => x.id)
+      );
+
       await this.cacheManager.set(cacheKey, data, PhotosService.TTL);
       return data;
     } catch (error: unknown) {

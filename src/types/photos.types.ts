@@ -1,4 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
+import { PaginatedResponse } from "./generic.types";
 
 const Photos = Type.Object({
   albumId: Type.String(),
@@ -9,3 +10,6 @@ const Photos = Type.Object({
 });
 
 export type Photos = Static<typeof Photos>;
+
+export const PhotosPaginated = PaginatedResponse(Photos);
+export type PhotosPaginated = Static<typeof PhotosPaginated>;
