@@ -14,6 +14,8 @@ import { PositiveNumber } from "../types/generic.types";
 import { Value } from "@sinclair/typebox/value";
 import { paginate, totalPages } from "../utils/paginate";
 
+type GetPhotosResponse = Photos[] | PhotosPaginated;
+
 @Controller("/photos")
 @UseInterceptors(CacheInterceptor)
 export class PhotosController {
@@ -24,10 +26,14 @@ export class PhotosController {
     @Param("albumId", ParseIntPipe) albumId: number,
     @Query("page") page?: number,
     @Query("limit") limit?: number
-  ): Promise<Photos[] | PhotosPaginated> {
+  ): Promise<GetPhotosResponse> {
     if (!Value.Check(PositiveNumber, albumId)) {
+      throw new BadRequestException("'albumId' must be a positive number.");
+    }
+
+    if ((page != null && limit == null) || (page == null && limit != null)) {
       throw new BadRequestException(
-        "'albumId' needs to be defined or a positive number."
+        "'page' and 'limit' must be defined together."
       );
     }
 
@@ -47,7 +53,7 @@ export class PhotosController {
       albumId
     );
 
-    if (page && limit) {
+    if (page != null && limit != null) {
       if (page > totalPages(photos, limit)) {
         throw new BadRequestException(
           "requested 'page' is more than the 'totalPages'"
