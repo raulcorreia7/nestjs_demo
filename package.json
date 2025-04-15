@@ -15,6 +15,7 @@
     "@nestjs/platform-express": "^11.0.17",
     "@sinclair/typebox": "^0.34.33",
     "axios": "^1.8.4",
+    "dotenv": "^16.5.0",
     "reflect-metadata": "^0.2.2",
     "remeda": "^2.21.2",
     "rxjs": "^7.8.2"

@@ -9,13 +9,11 @@ import {
 import axios from "axios";
 import * as R from "remeda";
 import { Photos } from "../types/photos.types";
-
+import { config } from "../config/config";
 @Injectable()
 @UseInterceptors(CacheInterceptor)
 export class PhotosService {
   private url: string = "https://jsonplaceholder.typicode.com/photos";
-
-  private static TTL: number = 1000 * 60 * 10;
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async getPhotosByAlbumId(albumId: number): Promise<Photos[]> {
@@ -37,7 +35,7 @@ export class PhotosService {
         R.sortBy((x) => x.id)
       );
 
-      await this.cacheManager.set(cacheKey, data, PhotosService.TTL);
+      await this.cacheManager.set(cacheKey, data, config.photos.ttl);
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
